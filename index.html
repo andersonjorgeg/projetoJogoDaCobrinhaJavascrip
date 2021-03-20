@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jogo da cobrinha</title>
+</head>
+<body>
+    <h1>Jogo da Cobrinha</h1>
+    <canvas id="stage" width="400" height="400" ></canvas>
+    <script type="text/javascript">
+
+        window.onload = function() {
+
+            let stage = document.getElementById('stage')
+            let ctx = stage.getContext("2d")
+            document.addEventListener("keydown", keyPush)
+            setInterval(game, 90)
+
+            const velocidade = 1
+
+            let velocidadeX = velocidadeY = 0
+            let pontoX = 10
+            let pontoY = 15
+            let tamanhoPeca = 20
+            let quantidadePeca = 20
+            let posicaoMacaX = posicaoMacaY = 15
+            
+            let rastro = []
+            tail = 5
+
+            function game() {
+                pontoX += velocidadeX
+                pontoY += velocidadeY
+                if (pontoX < 0) {
+                    pontoX = quantidadePeca - 1
+                }
+                if (pontoX > quantidadePeca - 1) {
+                    pontoX = 0
+                }
+                if (pontoY < 0) {
+                    pontoX = quantidadePeca - 1
+                }
+                if (pontoY > quantidadePeca - 1) {
+                    pontoY = 0
+                }
+
+                ctx.fillStyle = "black"
+                ctx.fillRect(0, 0, stage.width, stage.height)
+
+                ctx.fillStyle = "red"
+                ctx.fillRect(posicaoMacaX*tamanhoPeca, posicaoMacaY*tamanhoPeca, tamanhoPeca, tamanhoPeca)
+
+
+                ctx.fillStyle = "gray"
+                for (let i = 0; i < rastro.length; i++) {
+                    ctx.fillRect(rastro[i].x*tamanhoPeca, rastro[i].y*tamanhoPeca, tamanhoPeca -1, tamanhoPeca -1)
+                    if(rastro[i].x == pontoX && rastro[i].y ==  pontoY) {
+                        velocidadeX = velocidadeY = 0
+                        tail = 5
+                    }
+                }
+
+                rastro.push({x: pontoX, y: pontoY})
+                while (rastro.length > tail) {
+                    rastro.shift()
+                }
+
+                if(posicaoMacaX == pontoX && posicaoMacaY == pontoY) {
+                    tail++
+                    posicaoMacaX = Math.floor(Math.random() * quantidadePeca)
+                    posicaoMacaY = Math.floor(Math.random() * quantidadePeca)
+                }
+            }
+
+            function keyPush(event) {
+                switch (event.keyCode) {
+                    case 37: // left - esquerda
+                        velocidadeX = -velocidade
+                        velocidadeY = 0
+                        break;
+                    case 38: // up - cima
+                        velocidadeX = 0
+                        velocidadeY = -velocidade
+                        break;
+                    case 39: // right - direita
+                        velocidadeX = velocidade
+                        velocidadeY = 0
+                        break;
+                    case 40: // down - baixo
+                        velocidadeX = 0
+                        velocidadeY = velocidade
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+        }
+    </script>
+    
+</body>
+</html>
